@@ -1,14 +1,27 @@
 import React from 'react';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, TabNavigator } from 'react-navigation';
 import ScreenEventList from './components/ScreenEventList';
 import ScreenEventDetails from './components/ScreenEventDetails';
+import ScreenEventMap from './components/ScreenEventMap';
 
-const RootNavigator = StackNavigator({
-  Home: {
+const EventsScreenNavigator = TabNavigator({
+  List: {
     screen: ScreenEventList,
     navigationOptions: {
       headerTitle: 'Events',
     },
+  },
+  Map: {
+    screen: ScreenEventMap,
+    navigationOptions: {
+      headerTitle: 'Events',
+    },
+  }
+});
+
+const RootNavigator = StackNavigator({
+  Home: {
+    screen: EventsScreenNavigator,
   },
   Details: {
     screen: ScreenEventDetails,
@@ -18,4 +31,27 @@ const RootNavigator = StackNavigator({
   },
 });
 
-export default RootNavigator;
+class App extends React.Component {
+  constructor() {
+    super();
+
+    this.state = { upcomingEvents: [], pastEvents: [] };
+  }
+
+  async componentDidMount() {
+    const response = await fetch(
+      'https://prideinlondon.org/events?format=json',
+    );
+    const json = await response.json();
+    this.setState({ upcomingEvents: json.upcoming, pastEvents: json.past });
+  }
+
+  render() {
+    const { upcomingEvents, pastEvents } = this.state;
+    return (
+      <RootNavigator screenProps={{upcomingEvents, pastEvents}} />
+    );
+  }
+}
+
+export default App;

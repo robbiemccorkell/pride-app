@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   locationSectionLink: {
-    color: 'red'
-  }
+    color: 'red',
+  },
 });
 
 export default EventDetails;
